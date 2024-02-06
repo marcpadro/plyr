@@ -214,6 +214,22 @@ class Listeners {
     const { player } = this;
     const { config, elements, timers } = player;
 
+    // Check if we are within specified bounds
+    on.call(player, elements.container, 'timeupdate play', (event) => {
+      if (player.currentTime < 0) {
+        player.currentTime = 0;
+      } else if (player.currentTime >= player.duration) {
+
+        if (event.type === 'timeupdate') {
+          player.pause();
+        }
+        else {
+          setTimeout(() => { player.currentTime = 0 }, 0)
+        }
+
+      }
+    });
+
     // Keyboard shortcuts
     if (!config.keyboard.global && config.keyboard.focused) {
       on.call(player, elements.container, 'keydown keyup', this.handleKey, false);

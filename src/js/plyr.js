@@ -471,8 +471,10 @@ class Plyr {
     // Validate input
     const inputIsValid = is.number(input) && input > 0;
 
+    let mediaTime = inputIsValid ? Math.min(input, this.duration) : 0;
+    mediaTime += this.start;
     // Set
-    this.media.currentTime = inputIsValid ? Math.min(input, this.duration) : 0;
+    this.media.currentTime = mediaTime;
 
     // Logging
     this.debug.log(`Seeking to ${this.currentTime} seconds`);
@@ -482,7 +484,9 @@ class Plyr {
    * Get current time
    */
   get currentTime() {
-    return Number(this.media.currentTime);
+    let mediaTime = Number(this.media.currentTime);
+
+    return mediaTime - this.start;
   }
 
   /**
@@ -514,14 +518,67 @@ class Plyr {
   }
 
   /**
+   * Set start time for the current media
+   */
+  set start(value) {
+    let start = value;
+
+    if (is.string(start)) {
+      start = Number(start);
+    }
+
+    this.config.start = is.number(start) ? start : 0;
+  }
+
+  /**
+   * Get start time for the current media
+   */
+  get start() {
+    return parseFloat(this.config.start) || 0;
+  }
+
+  /**
+   * Set end time for the current media
+   */
+  set end(value) {
+    let end = value;
+
+    if (is.string(end)) {
+      end = Number(end);
+    }
+
+    this.config.end = is.number(end) ? end : 0;
+  }
+
+  /**
+   * Get end time for the current media
+   */
+  get end() {
+    return parseFloat(this.config.end) || 0;
+  }
+
+  /**
    * Get the duration of the current media
    */
   get duration() {
-    // Faux duration set via config
-    const fauxDuration = parseFloat(this.config.duration);
     // Media duration can be NaN or Infinity before the media has loaded
     const realDuration = (this.media || {}).duration;
     const duration = !is.number(realDuration) || realDuration === Infinity ? 0 : realDuration;
+
+    // Faux duration set via config
+    const start = this.start;
+    const end = this.end;
+    let fauxDuration;
+
+    if (end) {
+      fauxDuration = end > start ? end - start : 0;
+    }
+    else if (this.config.duration) {
+      fauxDuration = parseFloat(this.config.duration) - start;
+    }
+    else {
+      fauxDuration = duration - start;
+    }
 
     // If config duration is funky, use regular duration
     return fauxDuration || duration;
