@@ -222,6 +222,7 @@ class Listeners {
 
         if (event.type === 'timeupdate') {
           player.pause();
+          triggerEvent.call(player, player.media, 'ended', true);
         }
         else {
           setTimeout(() => { player.currentTime = 0 }, 0)
