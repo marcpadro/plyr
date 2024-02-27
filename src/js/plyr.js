@@ -405,7 +405,7 @@ class Plyr {
    * Get ended state
    */
   get ended() {
-    return Boolean(this.media.ended);
+    return Boolean(this.media.ended) || this.currentTime >= this.duration;
   }
 
   /**

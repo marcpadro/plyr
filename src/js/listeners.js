@@ -221,7 +221,7 @@ class Listeners {
       } else if (player.currentTime >= player.duration) {
 
         if (event.type === 'timeupdate') {
-          player.pause();
+          player.media.pause();
           triggerEvent.call(player, player.media, 'ended', true);
         }
         else {
