@@ -1202,15 +1202,16 @@ class Plyr {
       if (soft) {
         if (Object.keys(this.elements).length) {
           // Remove elements
-          removeElement(this.elements.buttons.play);
+          // TODO: Do we need to do this?
+          // removeElement(this.elements.buttons.play);
           removeElement(this.elements.captions);
-          removeElement(this.elements.controls);
+          // removeElement(this.elements.controls);
           removeElement(this.elements.wrapper);
 
           // Clear for GC
-          this.elements.buttons.play = null;
+          // this.elements.buttons.play = null;
           this.elements.captions = null;
-          this.elements.controls = null;
+          // this.elements.controls = null;
           this.elements.wrapper = null;
         }
 
