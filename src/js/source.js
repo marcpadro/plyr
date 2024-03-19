@@ -54,7 +54,7 @@ const source = {
         }
 
         // Set the type and provider
-        const { sources, type } = input;
+        const { sources, type, start, end } = input;
         const [{ provider = providers.html5, src }] = sources;
         const tagName = provider === 'html5' ? type : 'div';
         const attributes = provider === 'html5' ? {} : { src };
@@ -62,6 +62,8 @@ const source = {
         Object.assign(this, {
           provider,
           type,
+          start,
+          end,
           // Check for support
           supported: support.check(type, provider, this.config.playsinline),
           // Create new element
