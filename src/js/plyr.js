@@ -486,7 +486,7 @@ class Plyr {
   get currentTime() {
     let mediaTime = Number(this.media.currentTime);
 
-    return mediaTime - this.start;
+    return Math.max(mediaTime - this.start, 0);
   }
 
   /**
@@ -527,14 +527,14 @@ class Plyr {
       start = Number(start);
     }
 
-    this.config.start = is.number(start) ? start : 0;
+    this.config.start = is.number(start) ? Math.max(start, 0) : 0;
   }
 
   /**
    * Get start time for the current media
    */
   get start() {
-    return parseFloat(this.config.start) || 0;
+    return Number(this.config.start) || 0;
   }
 
   /**
@@ -554,7 +554,7 @@ class Plyr {
    * Get end time for the current media
    */
   get end() {
-    return parseFloat(this.config.end) || 0;
+    return Number(this.config.end) || 0;
   }
 
   /**
