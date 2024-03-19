@@ -214,23 +214,6 @@ class Listeners {
     const { player } = this;
     const { config, elements, timers } = player;
 
-    // Check if we are within specified bounds
-    on.call(player, elements.container, 'timeupdate play', (event) => {
-      if (player.currentTime < 0) {
-        player.currentTime = 0;
-      } else if (player.currentTime >= player.duration) {
-
-        if (event.type === 'timeupdate') {
-          player.media.pause();
-          triggerEvent.call(player, player.media, 'ended', true);
-        }
-        else {
-          setTimeout(() => { player.currentTime = 0 }, 0)
-        }
-
-      }
-    });
-
     // Keyboard shortcuts
     if (!config.keyboard.global && config.keyboard.focused) {
       on.call(player, elements.container, 'keydown keyup', this.handleKey, false);
@@ -336,6 +319,33 @@ class Listeners {
   media = () => {
     const { player } = this;
     const { elements } = player;
+
+    let setting_time = false;
+
+    // Check if we are within specified bounds
+    on.call(player, player.media, 'timeupdate seeking seeked play durationchange loadeddata loadedmetadata', (event) => {
+      if (setting_time) return;
+
+      setting_time = true;
+
+      if (player.media.currentTime < player.start) {
+        player.media.currentTime = player.start;
+
+      } else if (player.media.currentTime >= player.start + player.duration) {
+        if (event.type === 'timeupdate') {
+          player.media.pause();
+          triggerEvent.call(player, player.media, 'ended', true);
+        }
+        else {
+          setTimeout(() => {
+            player.media.currentTime = player.start;
+          }, 0)
+        }
+
+      }
+
+      setting_time = false;
+    });
 
     // Time change on media
     on.call(player, player.media, 'timeupdate seeking seeked', (event) => controls.timeUpdate.call(player, event));
