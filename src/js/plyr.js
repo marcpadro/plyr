@@ -1187,9 +1187,9 @@ class Plyr {
    * @param {Boolean} soft - Whether it's a soft destroy (for source changes etc)
    */
   destroy = (callback, soft = false) => {
-    if (!this.ready) {
-      return;
-    }
+    // if (!this.ready) {
+    //   return;
+    // }
 
     const done = () => {
       // Reset overflow (incase destroyed while in fullscreen)
@@ -1269,7 +1269,7 @@ class Plyr {
       clearInterval(this.timers.playing);
 
       // Destroy YouTube API
-      if (this.embed !== null && is.function(this.embed.destroy)) {
+      if (this.embed && is.function(this.embed.destroy)) {
         this.embed.destroy();
       }
 
@@ -1278,7 +1278,7 @@ class Plyr {
     } else if (this.isVimeo) {
       // Destroy Vimeo API
       // then clean up (wait, to prevent postmessage errors)
-      if (this.embed !== null) {
+      if (this.embed && is.function(this.embed.unload)) {
         this.embed.unload().then(done);
       }
 
